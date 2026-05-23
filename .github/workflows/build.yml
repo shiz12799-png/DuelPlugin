@@ -9,8 +9,15 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - run: unzip "DuelPlugin (1).zip" && cd DuelPlugin && mvn package
+      - run: |
+          ZIP=$(find . -name "*.zip" | head -1)
+          echo "Found zip: $ZIP"
+          unzip "$ZIP"
+          DIR=$(find . -name "pom.xml" | head -1 | xargs dirname)
+          echo "Found pom in: $DIR"
+          cd "$DIR"
+          mvn package -q
       - uses: actions/upload-artifact@v4
         with:
           name: DuelPlugin
-          path: DuelPlugin/target/DuelPlugin-*-shaded.jar
+          path: "**/target/DuelPlugin-*-shaded.jar"
